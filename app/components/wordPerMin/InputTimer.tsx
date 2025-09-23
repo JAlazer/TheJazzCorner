@@ -17,6 +17,7 @@ export default function Countdown({duration}: CountdownProps) {
   const [isActive, setIsActive] = useState<boolean>(false);
   // State to track if the timer is paused
   const [isPaused, setIsPaused] = useState<boolean>(false);
+  
   // Reference to store the timer ID
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 

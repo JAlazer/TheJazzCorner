@@ -1,6 +1,6 @@
 "use client"
 
-import wpmText from "../mockData/wpmText.json";
+import wpmText from "../../mockData/wpmText.json";
 
 import { useState } from "react";
 
@@ -63,11 +63,9 @@ export default function WPM() {
     return (
         <>
             <div className="container-hold">
-                <div className="header">
-                    <h1>{oStrIdx}</h1>
-                    <div className="text-lg font-mono mb-2">
-                        <Countdown />
-                    </div>
+                <div className="flex flex-col items-center text-center">
+                    <h1><span className="font-bold">Pointer:</span> {oStrIdx}</h1>
+                    <Countdown duration={30}/>
                 </div>
 
                 <div className="text-hold">

@@ -4,9 +4,13 @@ import { useState, useRef, useEffect, ChangeEvent } from "react"; // Import Reac
 import { Input } from "@/app/components/ui/input"; // Import custom Input component
 import { Button } from "@/app/components/ui/button"; // Import custom Button component
 
-export default function Countdown() {
+interface CountdownProps {
+    duration: number;
+}
+
+export default function Countdown({duration}: CountdownProps) {
   // State to manage the duration input
-  const [duration, setDuration] = useState<number | string>("");
+//   const [duration, setDuration] = useState<number | string>("");
   // State to manage the countdown timer value
   const [timeLeft, setTimeLeft] = useState<number>(0);
   // State to track if the timer is active
@@ -53,7 +57,7 @@ export default function Countdown() {
   const handleReset = (): void => {
     setIsActive(false); // Set the timer as inactive
     setIsPaused(false); // Set the timer as not paused
-    setTimeLeft(typeof duration === "number" ? duration : 0); // Reset the timer to the original duration
+    setTimeLeft(duration); // Reset the timer to the original duration
     // Clear any existing timer
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -97,9 +101,9 @@ export default function Countdown() {
   };
 
   // Function to handle changes in the duration input field
-  const handleDurationChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setDuration(Number(e.target.value) || ""); // Update the duration state
-  };
+//   const handleDurationChange = (e: ChangeEvent<HTMLInputElement>): void => {
+//     setDuration(Number(e.target.value) || ""); // Update the duration state
+//   };
 
   // JSX return statement rendering the Countdown UI
   return (
@@ -112,23 +116,23 @@ export default function Countdown() {
           Countdown Timer
         </h1> */}
         {/* Input and set button container */}
-        {/* <div className="flex items-center mb-6">
-          <Input
+        <div className="flex items-center mb-6">
+          {/* <Input
             type="number"
             id="duration"
             placeholder="Enter duration in seconds"
             value={duration}
             onChange={handleDurationChange}
             className="flex-1 mr-4 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
-          />
+          /> */}
           <Button
             onClick={handleSetDuration}
             variant="outline"
             className="text-gray-800 dark:text-gray-200"
           >
-            Set
+            Set 30s Test
           </Button>
-        </div> */}
+        </div>
         {/* Display the formatted time left */}
         <div className="text-6xl font-bold text-gray-800 dark:text-gray-200 mb-8 text-center">
           {formatTime(timeLeft)}

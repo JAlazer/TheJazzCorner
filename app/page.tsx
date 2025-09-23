@@ -1,9 +1,12 @@
 import Image from "next/image";
 import WPM from "./components/WordPM";
+import Quotes from "./components/Quotes";
+import PageHeader from "./components/PageHeader";
 
 export default function Home() {
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+      <PageHeader title="Welcome to The Jazz Corner" />
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <Image
           className="dark:invert"
@@ -61,6 +64,7 @@ export default function Home() {
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
        <span>Made with the tunes of love ❤️</span>
       </footer>
+      <Quotes />
     </div>
   );
 }

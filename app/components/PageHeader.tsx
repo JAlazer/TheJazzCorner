@@ -16,7 +16,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 }) => (
     <header
         style={{
-            marginTop: '6rem',
+            marginTop: '10rem',
             padding: '2rem 0',
             textAlign: 'center',
         }}
@@ -41,10 +41,10 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                 }}
                 priority
             />
-            <h1 style={{ margin: 0, fontSize: '3rem' }}>{title}</h1>
-        </div>
-        <h2 style={{ margin: '0.5rem 0', color: '#666', fontSize: '2rem' }}>{subtitle}</h2>
-        <p style={{ margin: '1rem 0', color: '#888' }}>{description}</p>
+            <h1 style={{ margin: 0, fontSize: '3rem', color: '#000' }}>{title}</h1>
+            </div>
+            <h2 style={{ margin: '0.5rem 0', color: '#000', fontSize: '2rem' }}>{subtitle}</h2>
+            <p style={{ margin: '1rem 0', color: '#000' }}>{description}</p>
         {extra}
     </header>
 );

@@ -1,0 +1,22 @@
+[
+    
+    {
+        "name": "Darius Saadat",
+        "major": "Computer Science",
+        "currently_reading": "The Wager by David Grann",
+        "headshot": "/images/team/dariusHeadshot.jpg"
+    },
+    {
+        "name": "Johan Almanzar",
+        "major": "Computer Science and Physics",
+        "currently_reading": "Shar Objects by Gillian Flynn",
+        "headshot": "/images/team/johanHeadshot.jpg"
+    },
+    
+    {
+        "name": "Wesley Chapman",
+        "major": "Data Science and Business",
+        "currently_reading": "Beyond The Sky And The Earth by Jamie Zeppa",
+        "headshot": "/images/team/wesHeadshot.jpg"
+    }
+]

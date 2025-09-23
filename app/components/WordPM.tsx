@@ -4,12 +4,18 @@ import wpmText from "../mockData/wpmText.json";
 
 import { useState } from "react";
 
-import { useTimer } from "react-timer-hook";
+import Countdown from "./InputTimer";
 
 export default function WPM() {
 
     const [userTxt, setUserTxt] = useState('');
     const [oStrIdx, setStrIdx] = useState(0); // pointer to the odyssey passage
+    const [charCount, setCharCount] = useState(0);
+    const [words, setWords] = useState(['']);
+
+    // const { elapsedTime, isActive, startTimer, stopTimer, resetTimer } = useInputTimer();
+    const startTime = performance.now();
+    let elapsedTime = 0;
 
     // const { elapsedTime, isRunning, start, stop, reset } = useTimer();
 
@@ -23,6 +29,8 @@ export default function WPM() {
 
     function handleDown(event: React.KeyboardEvent<HTMLInputElement>) {
         const keyPressed = event.key;
+
+        // add to the overall userword inputted
         if (keyPressed === " ") {
             console.log("");
         } else if (keyPressed === "Backspace") {
@@ -31,13 +39,23 @@ export default function WPM() {
             setUserTxt(userTxt + keyPressed);
         }
         
+        // move the pointer
         if (keyPressed === fillerTxt[oStrIdx]) {
             setStrIdx(oStrIdx + 1);
+        }
+
+        // start the timer
+        if (words.length === 0) {
+            // startTimer();
         }
     }
 
     function handleSpace(event: React.KeyboardEvent<HTMLInputElement>) {
         if (event.key === " ") {
+            words.push(userTxt);
+            
+            elapsedTime = performance.now() - startTime;
+
             setUserTxt('');
         }
     }
@@ -45,12 +63,15 @@ export default function WPM() {
     return (
         <>
             <div className="container-hold">
-                <div className="flex justify-item center align-items center">
+                <div className="header">
                     <h1>{oStrIdx}</h1>
+                    <div className="text-lg font-mono mb-2">
+                        <Countdown />
+                    </div>
                 </div>
 
                 <div className="text-hold">
-                {fillerTxt}
+                    {fillerTxt}
                 </div>
 
                 <div className="type cheker">
@@ -67,6 +88,17 @@ export default function WPM() {
                 </div>
 
                 <h1>{userTxt}</h1>
+                <ul>
+                    {words.map(
+                        (aWord) => {
+                            return (
+                                <li>
+                                    {aWord}
+                                </li>
+                            )
+                        }
+                    )}
+                </ul>
             </div>
             
             

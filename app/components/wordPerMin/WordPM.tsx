@@ -62,19 +62,19 @@ export default function WPM() {
 
     return (
         <>
-            <div className="container-hold">
+            <div className="flex flex-col items-center text-center">
                 <div className="flex flex-col items-center text-center">
                     <h1><span className="font-bold">Pointer:</span> {oStrIdx}</h1>
                     <Countdown duration={30}/>
                 </div>
 
-                <div className="text-hold">
+                <div className="text-left">
                     {fillerTxt}
                 </div>
 
                 <div className="type cheker">
                     <input 
-                        className="border border-black-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="bg-white text-black p-2 border border-gray-300 rounded-lg"
                         type="text"
                         onKeyDown={(e) => handleDown(e)}
                         onKeyUp={(e) => {

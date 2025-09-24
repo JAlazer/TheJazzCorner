@@ -5,6 +5,7 @@ import wpmText from "../../mockData/wpmText.json";
 import { useState } from "react";
 
 import Countdown from "./InputTimer";
+import TextStream from "./TextStream";
 
 export default function WPM() {
 
@@ -32,11 +33,14 @@ export default function WPM() {
 
         // add to the overall userword inputted
         if (keyPressed === " ") {
-            console.log("");
+            setCharCount(charCount + 1);
+
         } else if (keyPressed === "Backspace") {
             setUserTxt(userTxt.substring(0, userTxt.length-1));
         } else {
             setUserTxt(userTxt + keyPressed);
+            setCharCount(charCount + 1);
+
         }
         
         // move the pointer
@@ -60,16 +64,20 @@ export default function WPM() {
         }
     }
 
+
+    function wpmCalculate30Sec(totalCharsNum: number) {
+        return totalCharsNum / 5 / 0.5
+    }
+
     return (
         <>
             <div className="flex flex-col items-center text-center">
                 <div className="flex flex-col items-center text-center">
-                    <h1><span className="font-bold">Pointer:</span> {oStrIdx}</h1>
                     <Countdown duration={30}/>
                 </div>
 
                 <div className="text-left">
-                    {fillerTxt}
+                    <TextStream text={fillerTxt} txtIdx={oStrIdx}/>
                 </div>
 
                 <div className="type cheker">
@@ -85,18 +93,7 @@ export default function WPM() {
                     />
                 </div>
 
-                <h1>{userTxt}</h1>
-                <ul>
-                    {words.map(
-                        (aWord) => {
-                            return (
-                                <li>
-                                    {aWord}
-                                </li>
-                            )
-                        }
-                    )}
-                </ul>
+               <h1>WPM: {wpmCalculate30Sec(charCount)}</h1>
             </div>
             
             

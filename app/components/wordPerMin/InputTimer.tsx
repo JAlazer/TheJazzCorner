@@ -87,7 +87,7 @@ export default function Countdown({duration}: CountdownProps) {
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
-    };
+    };  
   }, [isActive, isPaused]); // Dependencies array to rerun the effect
 
   // Function to format the time left into mm:ss format

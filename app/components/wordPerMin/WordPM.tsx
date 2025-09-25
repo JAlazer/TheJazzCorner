@@ -13,6 +13,7 @@ export default function WPM() {
     const [oStrIdx, setStrIdx] = useState(0); // pointer to the odyssey passage
     const [charCount, setCharCount] = useState(0);
     const [words, setWords] = useState(['']);
+    const [pressed, setPress] = useState(false); // ensure color change only upon press
 
     // const { elapsedTime, isActive, startTimer, stopTimer, resetTimer } = useInputTimer();
     const startTime = performance.now();
@@ -34,13 +35,12 @@ export default function WPM() {
         // add to the overall userword inputted
         if (keyPressed === " ") {
             setCharCount(charCount + 1);
-
         } else if (keyPressed === "Backspace") {
             setUserTxt(userTxt.substring(0, userTxt.length-1));
         } else {
             setUserTxt(userTxt + keyPressed);
             setCharCount(charCount + 1);
-
+            setPress(true);
         }
         
         // move the pointer
@@ -61,6 +61,8 @@ export default function WPM() {
             elapsedTime = performance.now() - startTime;
 
             setUserTxt('');
+        } else {
+            setPress(false);
         }
     }
 
@@ -77,7 +79,7 @@ export default function WPM() {
                 </div>
 
                 <div className="text-left">
-                    <TextStream text={fillerTxt} txtIdx={oStrIdx}/>
+                    <TextStream text={fillerTxt} txtIdx={oStrIdx} isPressed={pressed}/>
                 </div>
 
                 <div className="type cheker">

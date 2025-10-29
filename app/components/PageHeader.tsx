@@ -16,7 +16,6 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 }) => (
     <header
         style={{
-            marginTop: '10rem',
             padding: '2rem 0',
             textAlign: 'center',
         }}

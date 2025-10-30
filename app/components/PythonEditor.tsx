@@ -2,12 +2,89 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+// Declare CodeMirror type for TypeScript
+declare global {
+  interface Window {
+    CodeMirror: any;
+  }
+}
+
+type LanguageKey = 'python' | 'java' | 'cpp' | 'kotlin' | 'javascript';
+
+interface LanguageConfig {
+  name: string;
+  mode: string;
+  version: string;
+  template: string;
+}
+
+const LANGUAGES: Record<LanguageKey, LanguageConfig> = {
+  python: {
+    name: 'Python',
+    mode: 'python',
+    version: '3.10.0',
+    template: `def greet(name):
+    """A simple greeting function"""
+    return f"Hello, {name}!"
+
+# Call the function
+result = greet("Jazz Corner")
+print(result)`
+  },
+  java: {
+    name: 'Java',
+    mode: 'text/x-java',
+    version: '15.0.2',
+    template: `public class Main {
+    public static void main(String[] args) {
+        String name = "Jazz Corner";
+        System.out.println("Hello, " + name + "!");
+    }
+}`
+  },
+  cpp: {
+    name: 'C++',
+    mode: 'text/x-c++src',
+    version: '10.2.0',
+    template: `#include <iostream>
+#include <string>
+
+int main() {
+    std::string name = "Jazz Corner";
+    std::cout << "Hello, " << name << "!" << std::endl;
+    return 0;
+}`
+  },
+  kotlin: {
+    name: 'Kotlin',
+    mode: 'text/x-kotlin',
+    version: '1.8.20',
+    template: `fun main() {
+    val name = "Jazz Corner"
+    println("Hello, $name!")
+}`
+  },
+  javascript: {
+    name: 'JavaScript',
+    mode: 'javascript',
+    version: '18.15.0',
+    template: `function greet(name) {
+    return \`Hello, \${name}!\`;
+}
+
+// Call the function
+const result = greet("Jazz Corner");
+console.log(result);`
+  }
+};
+
 export default function PythonEditor() {
-  const editorRef = useRef<any | null>(null);
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const editorRef = useRef<any>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [output, setOutput] = useState('');
   const [isRunning, setIsRunning] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageKey>('python');
 
   useEffect(() => {
     // Load CodeMirror scripts and styles
@@ -28,23 +105,25 @@ export default function PythonEditor() {
       });
 
       // Load JS
-            const loadScript = (src: string): Promise<void> => {
-              return new Promise<void>((resolve, reject) => {
-                if (document.querySelector(`script[src="${src}"]`)) {
-                  resolve();
-                  return;
-                }
-                const script = document.createElement('script');
-                script.src = src;
-                script.onload = () => resolve();
-                script.onerror = (ev) => reject(ev);
-                document.body.appendChild(script);
-              });
-            };
+      const loadScript = (src: string) => {
+        return new Promise<void>((resolve, reject) => {
+          if (document.querySelector(`script[src="${src}"]`)) {
+            resolve();
+            return;
+          }
+          const script = document.createElement('script');
+          script.src = src;
+          script.onload = () => resolve();
+          script.onerror = reject;
+          document.body.appendChild(script);
+        });
+      };
 
       try {
         await loadScript('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js');
         await loadScript('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js');
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js');
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js');
         setIsLoaded(true);
       } catch (error) {
         console.error('Failed to load CodeMirror:', error);
@@ -57,10 +136,10 @@ export default function PythonEditor() {
   useEffect(() => {
     if (!isLoaded || !textareaRef.current || editorRef.current) return;
 
-    const CodeMirror = (window as any).CodeMirror;
+    const CodeMirror = window.CodeMirror;
     
     editorRef.current = CodeMirror.fromTextArea(textareaRef.current, {
-      mode: 'python',
+      mode: LANGUAGES.python.mode,
       theme: 'monokai',
       lineNumbers: true,
       indentUnit: 4,
@@ -70,15 +149,7 @@ export default function PythonEditor() {
       matchBrackets: true
     });
 
-    if (editorRef.current) {
-      editorRef.current.setValue(`def greet(name):
-    """A simple greeting function"""
-    return f"Hello, {name}!"
-
-# Call the function
-result = greet("Jazz Corner")
-print(result)`);
-    }
+    editorRef.current.setValue(LANGUAGES.python.template);
 
     // Cleanup
     return () => {
@@ -88,6 +159,17 @@ print(result)`);
       }
     };
   }, [isLoaded]);
+
+  const handleLanguageChange = (language: LanguageKey) => {
+    setSelectedLanguage(language);
+    setOutput('');
+    
+    if (editorRef.current) {
+      const langConfig = LANGUAGES[language];
+      editorRef.current.setOption('mode', langConfig.mode);
+      editorRef.current.setValue(langConfig.template);
+    }
+  };
 
   const getCode = () => {
     if (editorRef.current) {
@@ -106,6 +188,8 @@ print(result)`);
     if (!editorRef.current) return;
     
     const code = editorRef.current.getValue();
+    const langConfig = LANGUAGES[selectedLanguage];
+    
     setIsRunning(true);
     setOutput('Running...');
 
@@ -116,8 +200,8 @@ print(result)`);
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          language: 'python',
-          version: '3.10.0',
+          language: selectedLanguage === 'cpp' ? 'c++' : selectedLanguage,
+          version: langConfig.version,
           files: [
             {
               content: code
@@ -135,11 +219,7 @@ print(result)`);
         setOutput(`Error: ${data.message || 'Failed to execute code'}`);
       }
     } catch (error) {
-      if (error instanceof Error) {
-        setOutput(`Error: ${error.message}`);
-      } else {
-        setOutput(`Error: ${String(error)}`);
-      }
+      setOutput(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsRunning(false);
     }
@@ -147,7 +227,25 @@ print(result)`);
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Python Code Editor</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Code Editor</h2>
+        
+        <div className="flex gap-2">
+          {(Object.entries(LANGUAGES) as [LanguageKey, LanguageConfig][]).map(([key, lang]) => (
+            <button
+              key={key}
+              onClick={() => handleLanguageChange(key)}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                selectedLanguage === key
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              {lang.name}
+            </button>
+          ))}
+        </div>
+      </div>
       
       <div className="border border-gray-300 rounded-lg overflow-hidden mb-4">
         <textarea ref={textareaRef} />
